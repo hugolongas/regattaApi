@@ -21,4 +21,15 @@ class ShipService
         
         return $ship;
     }
+
+    public function getByUserId($userId){
+        $ship = Ship::where('user_id','=',$user->id)->get();
+        return $ship;
+    }
+
+    
+    public function AddAthleteToShip($userId, $AthleteId){
+        $ship = Ship::where('user_id','=',$user->id)->get();
+        return $ship;
+    }
 }

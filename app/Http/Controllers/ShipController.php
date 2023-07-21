@@ -21,7 +21,7 @@ class ShipController extends Controller
      {
         $user = Auth::user();
         $ship = $user->ship;
-        $athletes = $ship->athletes
+        $athletes = $ship->athletes;
         $team = $user->team;
         $ship = $this->ShipService->getByUserId($user);        
         return response()->json(['ship'=>json_encode($ship)],200);
