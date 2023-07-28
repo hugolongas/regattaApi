@@ -51,12 +51,32 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        if (!$token = $this->AuthService->login($email, $password)) {
+        if (!$result = $this->AuthService->login($email, $password)) {
             return response()->json(['message' => 'Invalid email or password'], 401);
         }
 
-        return response()->json(['token' => $token]);
+        return  $this->respond($result);
     }
+
+    public function refresh()
+    {
+        $result = $this->AuthService->refreshToken();
+        return $this->respond($result);
+    }
+
+    public function logout()
+    {
+        $this->AuthService->logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function user(){
+        $result = $this->AuthService->me();
+        $result->team;
+        return response()->json([$result],200);
+    }
+
+
 
     public function verifyDoubleOptin(Request $request)
     {
@@ -113,5 +133,10 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => 'Password reset successfully']);
+    }    
+
+    protected function respond($result)
+    {
+        return response()->json($result);
     }
 }

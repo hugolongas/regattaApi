@@ -40,9 +40,37 @@ class AuthService
         if (!$token = auth()->attempt($credentials)) {
             return false;
         }
-
-        return $token;
+        $user = $this->me();
+        $result =
+        [
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ];
+        return $result;
     }
+
+    public function refreshToken(){
+        $token = auth()->refresh();
+        $result =
+        [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ];
+        return $result;
+    }
+
+    public function logout(){
+        auth()->logout();        
+    }
+
+    public function me(){
+        return auth()->user();        
+    }
+
+    
 
     public function verifyDoubleOptin($token)
     {

@@ -34,7 +34,7 @@
         <tr>
             <td align="center" valign="top">Verificació en dos pasos</td>        
             <td align="center" valign="top">
-                <a herf="{{$url}}">{{$url}}</a>
+                <a class="btn" href="{{$url}}">Validar Usuari</a>
                 </td>
         </tr>
         </tr>

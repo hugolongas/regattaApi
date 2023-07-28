@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Athlete;
+use App\Models\User;
+use App\Models\Ship;
 
-class AthleteSeeder extends Seeder
+class UsersSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,28 +13,35 @@ class AthleteSeeder extends Seeder
      */
     public function run()
     {
-        $athletes = array();
+        $users = array();
         // Generate 1000 character records
         for ($i = 1; $i <= 1000; $i++) {
-            $strength = rand(1, 10);
-            $stamina = rand(1, 10);
-            $experience = rand(1, 5);
-            $price = $this->calculatePrice($strength, $stamina, $experience);
 
-            $athlete = [
+            $user = [
                 'name' => $this->generateRandomCatalanName(),
-                'strength' => $strength,
-                'stamina' => $stamina,
-                'experience' => $experience,
-                'price' => $price
+                'team_id' => rand(1,5),
+                'email' => 'hugolo3.'.$i.'@mailinator.com',
+                'email_verified_at' => now(),
+                'password' => \Hash::make("password")                
             ];
-            array_push($athletes,$athlete);
+            array_push($users,$user);
         }
-        foreach ($athletes as $athlete) {
-            Athlete::create($athlete);
+        foreach ($users as $u) {
+            $user = User::create($u);
+            $ship = new Ship();
+            $ship->user_id = $user->id;
+            $ship->name = "vaixell";
+            $ship->initial_crew = 6;
+            $ship->current_crew = 0;
+            $ship->max_crew = 6;
+            $ship->speed = 5;
+            $ship->acceleration = 2;
+            $ship->save();
         }
     }
 
+    
+    
     private function generateRandomCatalanName()
     {
         // Define an array of Catalan names
@@ -57,24 +65,5 @@ class AthleteSeeder extends Seeder
 
         // Return a random name from the array
         return $fullName;
-    }
-
-    private function calculatePrice($strength, $stamina, $experience)
-    {
-    // Define weightage factors for each stat
-    $strengthWeight = 0.4;
-    $staminaWeight = 0.3;
-    $experienceWeight = 0.1;
-
-    // Calculate the overall value of the character based on the stats and weightage
-    $overallValue = ($strength * $strengthWeight) + ($stamina * $staminaWeight) + ($experience * $experienceWeight);
-
-    // Scale the overall value to the price range (10 to 100)
-    $minValue = 0; // Minimum value that a character can have
-    $maxValue = 15; // Maximum value that a character can have (adjust this based on your desired range)
-    $price = $minValue + ($overallValue / $maxValue) * (100 - $minValue);
-
-    // Round the price to two decimal places
-    return round($price, 2);
     }
 }

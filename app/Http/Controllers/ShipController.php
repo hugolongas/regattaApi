@@ -17,13 +17,24 @@ class ShipController extends Controller
     {
         $this->ShipService = $shipService;
     }
+
      public function Get()
      {
         $user = Auth::user();
-        $ship = $user->ship;
-        $athletes = $ship->athletes;
-        $team = $user->team;
-        $ship = $this->ShipService->getByUserId($user);        
+        $ship = $this->ShipService->getByUserId($user->id);   
+        $athletes =$ship->athletes;
         return response()->json(['ship'=>json_encode($ship)],200);
+    }
+
+    public function AddAthleteToShip($athleteId){
+        $user = Auth::user();        
+        $result = $this->ShipService->addAthlete($user, $athleteId);
+        return response()->json($result,200);
+    }
+
+    public function RemoveAthleteToShip($athleteId){
+        $user = Auth::user();        
+        $this->ShipService->removeAthlete($user, $athleteId);
+        return response()->json(true,200);
     }
 }
