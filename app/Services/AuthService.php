@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
@@ -6,10 +7,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
-use App\Services\MailService; 
-use App\Services\ShipService; 
+use App\Services\MailService;
+use App\Services\ShipService;
 
-class AuthService
+class AuthService extends Service
 {
     private $MailService;
     private $ShipService;
@@ -40,42 +41,50 @@ class AuthService
         if (!$token = auth()->attempt($credentials)) {
             return false;
         }
-        $user = $this->me();
+        $user =  auth()->user();
+        $user->team;
+        $user->ship;
         $result =
-        [
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ];
+            [
+                'user' => $user,
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ];
         return $result;
     }
 
-    public function refreshToken(){
+    public function refreshToken()
+    {
         $token = auth()->refresh();
         $result =
-        [
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ];
+            [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ];
         return $result;
     }
 
-    public function logout(){
-        auth()->logout();        
+    public function logout()
+    {
+        auth()->logout();
     }
 
-    public function me(){
-        return auth()->user();        
+    public function me()
+    {
+        $user =  auth()->user();
+        $user->team;
+        $user->ship;
+        return $this->OkResult($user);
     }
 
-    
+
 
     public function verifyDoubleOptin($token)
     {
         $decrypted = Crypt::decryptString($token);
-        list($email,$teamId, $createdAt) = explode('|', $decrypted);
+        list($email, $teamId, $createdAt) = explode('|', $decrypted);
 
         if ($this->isTokenExpired($createdAt)) {
             return false;
@@ -86,21 +95,21 @@ class AuthService
         if (!$user) {
             return false;
         }
-        
-            $user->team_id = $teamId;
-            $user->email_verified_at = now();
-            $user->save();
-            
-            $this->ShipService->createShip($user);
-            
-            return true;        
+
+        $user->team_id = $teamId;
+        $user->email_verified_at = now();
+        $user->save();
+
+        $this->ShipService->createShip($user);
+
+        return true;
     }
 
     public function requestPasswordReset($email)
     {
         $user = User::where('email', $email)->first();
 
-        if ($user) {            
+        if ($user) {
             $this->sendPasswordResetEmail($user);
         }
     }
@@ -146,15 +155,15 @@ class AuthService
 
     private function generatePasswordResetToken($userId)
     {
-        $token = Crypt::encryptString("{$userId}|".now());
+        $token = Crypt::encryptString("{$userId}|" . now());
 
         return urlencode($token);
     }
 
     private function sendDoubleOptinEmail(User $user, $team_Id)
     {
-        $token = $this->generateVerificationToken($user,$team_Id);        
-        
+        $token = $this->generateVerificationToken($user, $team_Id);
+
         // Code to send double-optin email to the user with the $verificationToken
         $this->MailService->sendDoubleOptinEmail($user->email, $token);
     }

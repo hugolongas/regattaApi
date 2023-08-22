@@ -21,9 +21,9 @@ class ShipController extends Controller
      public function Get()
      {
         $user = Auth::user();
-        $ship = $this->ShipService->getByUserId($user->id);   
-        $athletes =$ship->athletes;
-        return response()->json(['ship'=>json_encode($ship)],200);
+        $result = $this->ShipService->getByUserId($user->id);   
+        
+        return response()->json($result,200);
     }
 
     public function AddAthleteToShip($athleteId){
@@ -34,7 +34,19 @@ class ShipController extends Controller
 
     public function RemoveAthleteToShip($athleteId){
         $user = Auth::user();        
-        $this->ShipService->removeAthlete($user, $athleteId);
-        return response()->json(true,200);
+        $result = $this->ShipService->removeAthlete($user, $athleteId);
+        return response()->json($result,200);
+    }
+
+    public function AddUpgradeToShip($upgradeId){
+        $user = Auth::user();
+        $result = $this->ShipService->addUpgrade($user,$upgradeId);
+        return response()->json($result,200);
+    }
+
+    public function RemoveUpgradeToShip($upgradeId){
+        $user = Auth::user();        
+        $result = $this->ShipService->removeUpgrade($user, $upgradeId);
+        return response()->json($result,200);
     }
 }

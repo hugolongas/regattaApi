@@ -71,9 +71,8 @@ class AuthController extends Controller
     }
 
     public function user(){
-        $result = $this->AuthService->me();
-        $result->team;
-        return response()->json([$result],200);
+        $result = $this->AuthService->me();        
+        return response()->json($result,200);
     }
 
 

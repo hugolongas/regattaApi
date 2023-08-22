@@ -15,6 +15,7 @@ class Stage extends Model
 
     public function weatherEffects()
     {
-        return $this->hasMany(WeatherEffect::class);
+        return $this->belongsToMany(WeatherEffect::class);
     }
+    
 }
