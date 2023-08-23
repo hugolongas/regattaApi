@@ -9,6 +9,7 @@ use App\Http\Controllers\AthleteController;
 use App\Http\Controllers\UpgradeController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RaceController;
+use App\Http\Controllers\LeaderBoardController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -20,6 +21,9 @@ Route::get('teams/all',[TeamController::class,'getAll']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::post('race/simulateId/{raceId}',[RaceController::class,'simulateById']);
+
+Route::get('leaderboard/teams',[LeaderBoardController::class, 'getteams']);
+Route::get('leaderboard',[LeaderBoardController::class, 'GetLeaderBoard']);
 
 Route::middleware('jwt.auth')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -44,7 +48,4 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('upgrades/all',[UpgradeController::class,'getAll']);
     Route::get('race/all',[RaceController::class,'getAll']);
     //Route::post('race/simulateId/{raceId}',[RaceController::class,'simulateById']);
-});
-Route::group(['middleware' => ['jwt.auth', 'admin']], function () {
-    
 });

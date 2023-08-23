@@ -4,27 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Services\LeaderBoardService;
+
 class LeaderBoardController extends Controller
 {
     private $LeaderBoardService;
 
-    public function __construct(ShipService $leaderboardService)
+    public function __construct(LeaderBoardService $leaderboardService)
     {
         $this->LeaderBoardService = $leaderboardService;
     }
 
     public function GetTeams(){
         $teams = $this->LeaderBoardService->getAll();
-        return response()->json(['teams'=>json_encode($teams)],200);
-    }
-
-    public function GetBestSailor(){
-        $sailor = $this->LeaderBoardService->bestSailor();
-        return response()->json(['sailor'=>json_encode($sailor)],200);
+        return response()->json($teams,200);
     }
 
     public function GetLeaderBoard(){
         $users = $this->LeaderBoardService->leaderBoard();
-        return response()->json(['leaderboard'=>json_encode($users)],200);
+        return response()->json($users,200);
     }
 }

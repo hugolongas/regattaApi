@@ -3,22 +3,17 @@
 namespace App\Services;
 
 use App\Models\Team;
+use App\Models\User;
 
-class AthleteService extends Service
+class LeaderBoardService extends Service
 {
     public function getAll(){
-        $teams = Team::all()->orderby('points');
-        $teams->users;
-        return $this->OkResponse($teams);
-    }
-
-    public function bestSailor(){
-        $user = User::Where('is_admin','0')->orderby('points')->first();
-        return $this->OkResponse($user);
+        $teams = Team::all();
+        return $this->OkResult($teams);
     }
 
     public function leaderBoard(){
-        $users = User::Where('is_admin','0')->orderby('points');
-        return $this->OkResponse($users);
+        $users = User::Where('is_admin','0')->orderby('points')->get();
+        return $this->OkResult($users);
     }
 }

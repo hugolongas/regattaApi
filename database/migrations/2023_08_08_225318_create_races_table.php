@@ -18,7 +18,7 @@ class CreateRacesTable extends Migration
             $table->foreignId("stage_id");
             $table->datetime("race_date");
             $table->boolean("race_finished")->default(false);
-            $table->text("results");
+            $table->longText("results");
             $table->timestamps();
         });
     }

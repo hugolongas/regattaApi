@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\Upgrade;
 
-class UpgradeSeeder extends Seeder {
+class UpgradesSeeder extends Seeder {
 
     /**
     * Run the database seeds.
