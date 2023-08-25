@@ -60,7 +60,7 @@ class RaceService extends Service
 
     private function _simulateRace( $race ) {
         $teams = Team::with('users')->get();
-        $users = User::with( 'ship' )->with( 'ship.upgrades' )->with( 'ship.athletes' )->get();
+        $users = User::wherenotnull('email_verified_at')->with( 'ship' )->with( 'ship.upgrades' )->with( 'ship.athletes' )->get();
         $stage = $race->stage;
         $weatherEffects = $stage->weatherEffects;
 
