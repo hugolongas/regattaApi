@@ -13,7 +13,20 @@ class LeaderBoardService extends Service
     }
 
     public function leaderBoard(){
-        $users = User::Where('is_admin','0')->with('team')->orderby('points','desc')->get();
-        return $this->OkResult($users);
+        $users = User::with('team')
+        ->Where('is_admin','0')
+        ->whereNotNull('team_id')
+        ->orderby('points','desc')->get();
+        $userDashboard = [];
+        foreach ($users as $index => $user)
+        {
+            $userDashboard[] = [
+                'position'=>$index+1,
+                'name'=>$user->name,
+                'team'=>$user->team->name,
+                'points'=>$user->points
+            ];
+        }
+        return $this->OkResult($userDashboard);
     }
 }
