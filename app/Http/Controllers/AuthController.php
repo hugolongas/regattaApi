@@ -24,7 +24,11 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first()], 400);
+            $response = [
+                'result' => false,
+                'data' => $validator->errors()->first()
+            ];
+            return response()->json($response, 200);
         }
 
         $name = $request->input('name');
@@ -33,8 +37,11 @@ class AuthController extends Controller
         $teamId = $request->input('teamId');
 
         $this->AuthService->register($name, $email, $password, $teamId);
-
-        return response()->json(['message' => 'User registered successfully'], 201);
+        $response = [
+            'result' => true,
+            'data' => 'Usuari registrat correctament'
+        ];
+        return response()->json($response, 201);
     }
 
     public function login(Request $request)
@@ -50,12 +57,13 @@ class AuthController extends Controller
 
         $email = $request->input('email');
         $password = $request->input('password');
-
-        if (!$result = $this->AuthService->login($email, $password)) {
-            return response()->json(['message' => 'Invalid email or password'], 401);
+        $resp = $this->AuthService->login($email, $password);
+        if (!$resp['result']) {
+            $mess = $resp['data'];
+            return $this->respond($resp);
         }
 
-        return  $this->respond($result);
+        return  $this->respond($resp);
     }
 
     public function refresh()
@@ -88,9 +96,9 @@ class AuthController extends Controller
         }
 
         $token = $request->input('token');
-
-        if (!$this->AuthService->verifyDoubleOptin($token)) {
-            return response()->json(['message' => 'Invalid or expired verification token'], 400);
+        $resp = $this->AuthService->verifyDoubleOptin($token);
+        if (!$resp['result']) {
+            return response()->json($resp, 200);
         }
 
         return response()->json(['message' => 'Double opt-in verified successfully']);

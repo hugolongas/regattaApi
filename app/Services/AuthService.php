@@ -29,9 +29,14 @@ class AuthService extends Service
             'password' => \Hash::make($password),
         ]);
 
+        $user->team_id = $teamId;
+        $user->email_verified_at = now();
+
         $user->save();
 
-        $this->sendDoubleOptinEmail($user, $teamId);
+        $this->ShipService->createShip($user);
+
+        //$this->sendDoubleOptinEmail($user, $teamId);
     }
 
     public function login($email, $password)
@@ -39,9 +44,10 @@ class AuthService extends Service
         $credentials = ['email' => $email, 'password' => $password];
 
         if (!$token = auth()->attempt($credentials)) {
-            return false;
+            return $this->FailResponse("L'Usuari o contrasenya es incorrecte");
         }
         $user =  auth()->user();
+        if($user->email_verified_at==null) return $this->FailResponse("Usuari no verificat");
         $user->team;
         $user->ship;
         $result =
@@ -51,7 +57,7 @@ class AuthService extends Service
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60
             ];
-        return $result;
+        return $this->OkResult($result);
     }
 
     public function refreshToken()
@@ -87,13 +93,13 @@ class AuthService extends Service
         list($email, $teamId, $createdAt) = explode('|', $decrypted);
 
         if ($this->isTokenExpired($createdAt)) {
-            return false;
+            return $this->FailResponse("El token ha caducat");
         }
 
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return false;
+            return $this->FailResponse("No hi ha cap usuari registrat amb aquestes dades");
         }
 
         $user->team_id = $teamId;
@@ -102,7 +108,7 @@ class AuthService extends Service
 
         $this->ShipService->createShip($user);
 
-        return true;
+        return $this->OkResult(true);
     }
 
     public function requestPasswordReset($email)
