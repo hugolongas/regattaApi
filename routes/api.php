@@ -10,9 +10,12 @@ use App\Http\Controllers\UpgradeController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\RaceController;
 use App\Http\Controllers\LeaderBoardController;
+use App\Http\Controllers\CacheController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::post('regenerateCache', [CacheController::class, 'regenerateCache']);
 
 Route::post('verifyOptin', [AuthController::class, 'verifyDoubleOptin']);
 
@@ -21,6 +24,7 @@ Route::get('teams/all',[TeamController::class,'getAll']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::post('race/simulateId/{raceId}',[RaceController::class,'simulateById']);
+Route::post('race/simulateRaceByDate',[RaceController::class,'simulateRaceByDate']);
 
 Route::get('leaderboard/teams',[LeaderBoardController::class, 'getteams']);
 Route::get('leaderboard',[LeaderBoardController::class, 'GetLeaderBoard']);
@@ -47,5 +51,4 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::get('upgrades/all',[UpgradeController::class,'getAll']);
     Route::get('race/all',[RaceController::class,'getAll']);
-    //Route::post('race/simulateId/{raceId}',[RaceController::class,'simulateById']);
 });

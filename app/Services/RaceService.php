@@ -39,10 +39,9 @@ class RaceService extends Service
 
     public function simulateRaceByDate( $raceDate ) {
 
-        $race = Race::where( 'race_date', '<=', $raceDate )->with( 'stage' )->with( 'stage.weatherEffects' )->first();
-        $race->results = 'simulated';
-        $race->race_finished = true;
-        $race->save();
+        $race = Race::where( 'race_date', '<=', $raceDate )->where('race_finished',0)->with( 'stage' )->with( 'stage.weatherEffects' )->first();
+        if($race==null) return $this->OkResult( "sin carrera en fecha" );  
+        $raceResult = $this->_simulateRace( $race );
 
         return $this->OkResult( $race );
     }
