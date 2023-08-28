@@ -65,10 +65,11 @@ class ShipService extends Service
     {
         
         $athlete = Athlete::find($athleteId);
-        if (!$athlete) return false;
+        if (!$athlete) return $this->FailResponse("No existeix el mariner");
 
         $ship = Ship::where('user_id', '=', $user->id)->with('athletes')->first();
-        if ($athlete->ship_id !== $ship->id) return false;
+        if ($athlete->ship_id != $ship->id) return $this->FailResponse(
+            "El mariner no ha sigut assignat a aquest vaixell result:".$athlete->ship_id."ship". $ship->id);
 
         // Remove the athlete from the ship
         $athlete->ship_id = null;

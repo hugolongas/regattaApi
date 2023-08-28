@@ -24,7 +24,7 @@ Route::get('teams/all',[TeamController::class,'getAll']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::post('race/simulateId/{raceId}',[RaceController::class,'simulateById']);
-Route::post('race/simulateRaceByDate',[RaceController::class,'simulateRaceByDate']);
+Route::get('race/simulateRaceByDate',[RaceController::class,'simulateRaceByDate']);
 
 Route::get('leaderboard/teams',[LeaderBoardController::class, 'getteams']);
 Route::get('leaderboard',[LeaderBoardController::class, 'GetLeaderBoard']);
