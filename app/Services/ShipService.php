@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Athlete;
 use App\Models\Upgrade;
 
+use App\Events\AthleteAdded;
+
 class ShipService extends Service
 {
     public function createShip($user)
@@ -42,12 +44,12 @@ class ShipService extends Service
     {
         
         $athlete = Athlete::find($athleteId);
-        if (!$athlete || $athlete->ship_id) return false;
+        if (!$athlete || $athlete->ship_id) return $this->FailResponse("El mariner ja ha sigut contractat per un altre usuari");
 
         $ship = Ship::where('user_id', '=', $user->id)->with('athletes')->first();
-        if ($ship->current_crew >= $ship->max_crew) return false;
+        if ($ship->current_crew >= $ship->max_crew) return $this->FailResponse("Ja no pots contractar més mariners");
 
-        if ($user->money < $athlete->price) return false;
+        if ($user->money < $athlete->price) return $this->FailResponse("No tens prous diners per contractar a aquest mariner");
 
         $athlete->ship_id = $ship->id;
         $athlete->save();
@@ -57,7 +59,7 @@ class ShipService extends Service
 
         $user->money -= $athlete->price;
         $user->save();
-
+        event(new AthleteAdded());
         return $this->OkResult(true);
     }
 
