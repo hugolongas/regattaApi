@@ -25,7 +25,7 @@ class RaceSeeder extends Seeder
             $stage->weatherEffects()->attach($weather);
             $stage->save();
             }
-            $raceDate = new DateTime("2023-08-23 12:00:00");
+            $raceDate = new DateTime("2023-09-04 12:00:00");
             $races[] = [
                 'stage_id'=>$stage->id,
                 'race_date' => $raceDate,

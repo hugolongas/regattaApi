@@ -9,19 +9,23 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class AthleteAdded implements ShouldBroadcast
+class AthleteAdded implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+  public $message;
+
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($message)
     {
-        //
+        $this->message = $message;
     }
 
     /**
@@ -37,10 +41,5 @@ class AthleteAdded implements ShouldBroadcast
     public function broadcastAs()
     {
         return 'AthleteAdded';
-    }
-    
-    public function broadcastWith()
-    {
-        return ['data' => 'your-event-data'];
     }
 }

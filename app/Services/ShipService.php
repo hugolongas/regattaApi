@@ -59,7 +59,6 @@ class ShipService extends Service
 
         $user->money -= $athlete->price;
         $user->save();
-        event(new AthleteAdded());
         return $this->OkResult(true);
     }
 
