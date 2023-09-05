@@ -19,12 +19,15 @@ class AthleteController extends Controller
     }
 
     public function GetAll(){
-        $result = $this->AthleteService->getAll();
+        
+        $user = Auth::user();        
+        $ship = $user->ship;
+        $result = $this->AthleteService->getAll($ship->id);
         return response()->json($result,200);
     }
 
     public function GetUnasigned(){
-        $athletes = $this->AthleteService->getUnasigned();
+        $result = $this->AthleteService->getUnasigned();
         return response()->json($result,200);
     }
 

@@ -124,7 +124,7 @@ class ShipService extends Service
         $upgrade = Upgrade::findOrFail($upgradeId);
 
         // Handle crew upgrade separately
-        if ($upgrade->type === 'crew') {
+        if ($upgrade->upgrade_type === 'crew') {
             // Check if removing the crew upgrade will result in exceeding the current crew count
             if ($ship->current_crew > ($ship->max_crew - $upgrade->value)) {
                 return "crew error";

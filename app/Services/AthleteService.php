@@ -6,8 +6,8 @@ use App\Models\Athlete;
 
 class AthleteService extends Service
 {
-    public function getAll(){
-        $athletes = Athlete::all();
+    public function getAll($shipId){
+        $athletes = Athlete::whereNull("ship_id")->orWhere("ship_id",$shipId)->get();
         return $this->OkResult($athletes);
     }
 
