@@ -18,7 +18,7 @@ class RaceService extends Service
         $stage = Stage::findOrFail( $stageId );
         foreach ( $wathers as $weather ) {
             $weather = WeatherEffect::findOrFail( $weather );
-            $stage->weatherEffects->attach( $wather );
+            $stage->weatherEffects->attach( $weather );
         }
         $stage->save();
 
@@ -86,8 +86,12 @@ class RaceService extends Service
         foreach ( $raceTimes as $key => $users ) {
             if ( $position === 1 ) {
                 $prize = floor( $remainingPrize * 0.4 );
-            } else {
-                $prize = floor( $remainingPrize * 0.4 );
+            } 
+            else if($position === 2){
+                $prize = floor( $remainingPrize * 0.3 );
+            }
+            else {
+                $prize = floor( $remainingPrize * 0.2 );
             }
             if ( $remainingPrize < 1 ) {
                 $prize = 0;
@@ -112,7 +116,8 @@ class RaceService extends Service
                     'user' => $user->name,
                     'team_id' => $user->team_id,
                     'time' => $key,
-                    'points'=>$points
+                    'points'=>$points,
+                    'prize'=>$userPrize
                 ];
             }
             $remainingPrize -= $prize;
@@ -121,7 +126,6 @@ class RaceService extends Service
         $raceTeamResults = [];
         //team points
         foreach($teams as $team){            
-            $total_users = $team->users()->count();
             $total_points = 0;
             foreach($raceUserResults as $uResult){
                 $team_id = $uResult['team_id'];
@@ -129,7 +133,7 @@ class RaceService extends Service
                     $total_points += $uResult['points'];
                 }
             }
-            $teamRacePoints = ($total_points/$total_users);
+            $teamRacePoints = ($total_points/10);
             $raceTeamResults [] =[
                 'team_id'=>$team->id,
                 'team'=>$team->name,
