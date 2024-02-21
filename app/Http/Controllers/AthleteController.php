@@ -18,8 +18,8 @@ class AthleteController extends Controller
         $this->AthleteService = $athleteService;
     }
 
-    public function GetAll(){
-        
+    public function GetAll()
+    {        
         $user = Auth::user();        
         $ship = $user->ship;
         $result = $this->AthleteService->getAll($ship->id);

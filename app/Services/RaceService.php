@@ -103,7 +103,7 @@ class RaceService extends Service
 
                 $prizeMultiplierUpgrade = $ship->upgrades->where( 'upgrade_type', 'prize' )->first();
                 if ( $prizeMultiplierUpgrade ) {
-                    $userPrize *= ( $prizeMultiplierUpgrade->value / 100 );
+                    $userPrize *= (1+( $prizeMultiplierUpgrade->value / 100 ));
                 }
                 $points = $this->_calculatePositionPoints($position);
 
